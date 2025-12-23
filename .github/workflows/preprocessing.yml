@@ -1,1 +1,40 @@
+name: Preprocessing Dataset
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  preprocessing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas scikit-learn
+
+      - name: Run preprocessing script
+        run: |
+          python preprocessing/automate_Miftakhul-A-Rigin.py
+
+      - name: Commit preprocessing result
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add preprocessing/heart_preprocessed.csv
+          git commit -m "Update preprocessed dataset [auto]" || echo "No changes to commit"
+          git push
 
